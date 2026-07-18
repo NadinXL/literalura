@@ -90,7 +90,13 @@ public class Main {
         String json = cnx.getData(API_URL + "?search=" + bookName.replace(" ", "+"));
         JsonDTO results = dataConvertion.convertData(json, JsonDTO.class);
 
+        if (results == null || results.bookResults() == null) {
+            System.out.println("No se obtuvieron resultados de la API.");
+            return;
+        }
+
         Optional<Book> books = results.bookResults().stream()
+                .filter(b -> !b.authors().isEmpty() && !b.languages().isEmpty())
                 .findFirst()
                 .map(b -> new Book(b));
 
@@ -134,7 +140,13 @@ public class Main {
             String json = cnx.getData(API_URL + "?search=" + authorName.replace(" ", "+"));
             JsonDTO results = dataConvertion.convertData(json, JsonDTO.class);
 
+            if (results == null || results.bookResults() == null) {
+                System.out.println("No se obtuvieron resultados de la API.");
+                return;
+            }
+
             Optional<AuthorDTO> author = results.bookResults().stream()
+                    .filter(b -> !b.authors().isEmpty())
                     .findFirst()
                     .map(a -> new AuthorDTO(a.authors().get(0).authorName(), a.authors().get(0).birthYear(), a.authors().get(0).deathYear()));
 
@@ -200,7 +212,13 @@ public class Main {
         String json = cnx.getData(API_URL);
         JsonDTO results = dataConvertion.convertData(json, JsonDTO.class);
 
+        if (results == null || results.bookResults() == null) {
+            System.out.println("No se obtuvieron resultados de la API.");
+            return;
+        }
+
         List<Book> top10Books = results.bookResults().stream()
+                .filter(b -> !b.authors().isEmpty() && !b.languages().isEmpty())
                 .map(b -> new Book(b))
                 .sorted(Comparator.comparingLong(Book::getDownloads_count).reversed())
                 .limit(10)
