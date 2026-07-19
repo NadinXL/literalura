@@ -5,10 +5,10 @@ public record AuthorDTO(@JsonAlias("name")
                         String authorName,
 
                         @JsonAlias("birth_year")
-                        int birthYear,
+                        Integer birthYear,
 
                         @JsonAlias("death_year")
-                        int deathYear
+                        Integer deathYear
 ) {
     @Override
     public String toString() {
